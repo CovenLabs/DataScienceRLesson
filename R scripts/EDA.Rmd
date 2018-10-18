@@ -1,0 +1,417 @@
+---
+title: "Exploratory Data Analysis"
+author: "Dennis Irorere"
+date: "July 27, 2018"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+Lesson 3
+=================================================
+
+## Reading in Data
+The file have 99003 rows and 15 columns which represent a data of 99000 users of facebook and their information such as age, date of birth e.t.c
+```{r}
+getwd()
+list.files()
+pf <- read.csv("C://Users/Dennis/Downloads/pseudo_facebook.tsv", sep = "\t")
+names(pf)
+colnames(pf)
+```
+
+Our goal is to understand users behaviour and demographics, we want to understand what they are doing on facebook and what they use.
+
+##Histogram of user's Birthdays
+```{r}
+library(ggplot2)
+attach(pf)
+qplot(x = dob_day, data = pf) + 
+  scale_x_continuous(breaks = 1:31) + 
+  facet_wrap(~dob_month, ncol = 3)
+```
+
+
+##Friend Count
+```{r}
+qplot(x = friend_count, data = pf)
+```
+How is this plot similar to Moira's first plot?
+
+##Limiting axes
+```{r}
+qplot(x = friend_count, data = pf, xlim = c(0,1000))
+
+qplot(x = friend_count, data = pf) + 
+  scale_x_continuous(limits = c(0,1000))
+```
+## Adjusting the Bin Width
+```{r}
+qplot(x=friend_count, data = pf, binwidth = 25) +
+  scale_x_continuous(limits = c(0,1000), breaks = seq(0,1000, 50))+
+  facet_wrap(~gender)
+```
+#Omitting NA Gender observation
+```{r}
+qplot(x = friend_count, data = subset(pf, !is.na(gender)), binwidth = 10) +
+  scale_x_continuous(limits = c(0,1000), breaks = seq(0,1000,50)) + 
+  facet_wrap(~gender)
+```
+#Statistics by gender
+```{r}
+table(pf$gender)
+by(pf$friend_count,pf$gender,summary)
+```
+#Tenure
+```{r}
+qplot(x = tenure, data = pf, binwidth = 30, 
+      color = I('black'), fill = I('#099DD9'))
+```
+##Tenure years, instead of days
+```{r}
+qplot(x = tenure / 365, data = pf, binwidth = .25,
+      xlab = "Number of years using Facebook",
+      ylab = "Number of users in sample",
+      color = I('black'), fill = I('#099DD9')) +
+  scale_x_continuous(breaks = seq(1,7,1), limits = c(0,7))
+```
+##Users Age
+```{r}
+qplot(x = age, data = pf, binwidth = 1,
+      color = I('black'), fill = I('#5760AB')) + 
+  scale_x_continuous(breaks = seq(0,113,5))
+
+```
+#Transforming Data
+```{r}
+qplot(x = friend_count, data = pf)
+summary(pf$friend_count)
+summary(log10(pf$friend_count + 1))
+summary(sqrt(pf$friend_count))
+```
+
+##Plotting histogram with transform data
+```{r}
+qplot(x = log10(pf$friend_count + 1), data = pf, binwidth = 0.25)
+library(gridExtra)
+
+p1 <- qplot(x = friend_count, data = pf)
+p2 <- qplot(x = log10(pf$friend_count + 1), data = pf)
+p3 <- qplot(x = sqrt(friend_count), data = pf)
+
+grid.arrange(p1,p2,p3, ncol = 1)
+```
+
+## Transforming Data Alternate Solution
+## Use scales
+```{r}
+p1 <- ggplot(aes(x = friend_count), data = pf) + geom_histogram()
+p2 <- p1 + scale_x_log10()
+p3 <- p1 + scale_x_sqrt()
+
+grid.arrange(p1,p2,p3, ncol = 1)
+```
+##Adding a Scaling layer
+```{r}
+logScale <- qplot(x = log10(friend_count), data = pf)
+
+countscale <- ggplot(aes(x = friend_count), data = pf) + 
+  geom_histogram() + 
+  scale_x_log10()
+
+grid.arrange(logScale, countscale, ncol = 2)
+```
+#Lesson 4 two variable
+You will learn how to visualize two variables and quantify the relationship. By the use of data aggregation, conditional means and scatter plots. 
+##Noisy scatterplots
+```{r}
+library(ggplot2)
+library(dplyr)
+cor.test()
+```
+```{r}
+names(pf)
+ggplot(aes(x = age, y = friend_count), data = pf) + 
+  geom_jitter(alpha = 1/20)
+```
+Using the ggplot to plot two variable data types
+```{r}
+ggplot(aes(x = age, y = friend_count), data = pf) + 
+  geom_point() + xlim(13, 90)
+
+summary(age, pf)
+```
+##Ggplot syntax
+```{r}
+ggplot(aes(x = age, y = friend_count), data = pf) +
+  geom_point(alpha = 1/20)
+```
+##Over plotting
+```{r}
+ggplot(aes(age, friend_count), data = pf) + 
+  geom_jitter(alpha = 1/20) +  
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
